@@ -1,34 +1,69 @@
-// Define la configuración de MSAL
-const msalConfig = {
-    auth: {
-        clientId: 'TU_CLIENT_ID', // Debes obtener el Client ID desde el portal de Azure AD
-        authority: 'https://login.microsoftonline.com/TU_TENANT_ID', // Reemplaza con tu Tenant ID
-        redirectUri: 'https://localhost:3000', // URL de redirección después de iniciar sesión
-    },
-};
+// Crear una instancia de MSAL
+const myMSALObj = new msal.PublicClientApplication(msalConfig);
 
-const myMSALObj = new Msal.UserAgentApplication(msalConfig);
-
-// Función para abrir una ventana emergente con el botón para iniciar sesión con Microsoft
-function openLoginPopup() {
-    const popup = window.open('', 'MicrosoftLoginPopup', 'width=600,height=400');
-    popup.document.body.innerHTML = '<button id="loginWithMicrosoftButton">Iniciar Sesión con Microsoft</button>';
-
-    // Evento click en el botón dentro de la ventana emergente para iniciar sesión con Microsoft
-    popup.document.getElementById('loginWithMicrosoftButton').addEventListener('click', function () {
-        const loginRequest = {
-            scopes: ['openid', 'profile', 'User.Read'], // Ámbito de permisos requeridos
-        };
-
-        myMSALObj.loginPopup(loginRequest)
-            .then((loginResponse) => {
-                // El usuario ha iniciado sesión correctamente, url para pagar con tarjeta
-            })
-            .catch((error) => {
-                console.error(error);
-            });
-    });
+// Función para abrir un popup e iniciar sesión
+function loginWithMicrosoft() {
+    myMSALObj.loginPopup(loginRequest)
+        .then((loginResponse) => {
+            // Manejar la respuesta de inicio de sesión
+            console.log('Inicio de sesión exitoso:', loginResponse);
+        })
+        .catch(handleError);
 }
 
-// Evento click en el botón "Iniciar Sesión"
-document.getElementById('iniciarSesionButton').addEventListener('click', openLoginPopup);
+// Función para obtener un token de acceso y llamar a la API de MS Graph
+function getTokenAndCallMSGraph() {
+    // Adquirir silenciosamente un token de acceso
+    myMSALObj.acquireTokenSilent(tokenRequest)
+        .then((tokenResponse) => {
+            // Llamar a la API de MS Graph
+            callMSGraph(tokenResponse.accessToken);
+        })
+        .catch((error) => {
+            // Si acquireTokenSilent() falla, adquirir un token de acceso usando acquireTokenPopup()
+            if (error instanceof msal.InteractionRequiredAuthError) {
+                myMSALObj.acquireTokenPopup(tokenRequest)
+                    .then((tokenResponse) => {
+                        // Llamar a la API de MS Graph
+                        callMSGraph(tokenResponse.accessToken);
+                    })
+                    .catch(handleError);
+            } else {
+                handleError(error);
+            }
+        });
+}
+
+// Función para llamar a la API de MS Graph y mostrar datos en la página
+function callMSGraph(accessToken) {
+    // Utilizar Axios para la solicitud HTTP
+    axios.get('https://graph.microsoft.com/v1.0/me', {
+        headers: {
+            Authorization: `Bearer ${accessToken}`
+        }
+    })
+    .then(response => {
+        // Mostrar los datos del usuario en la página
+        console.log('Datos del usuario:', response.data);
+    })
+    .catch(handleError);
+}
+
+// Manejador de evento para el botón de inicio de sesión
+document.getElementById('loginWithMicrosoftButton').addEventListener('click', function () {
+    // Agregar una clase al botón para cambiar el estilo
+    this.classList.add('clicked');
+
+    // Luego, espera un breve momento (500 ms) y luego quita la clase para volver al estilo normal
+    setTimeout(() => {
+        this.classList.remove('clicked');
+    }, 500);
+
+    // Llama a la función de inicio de sesión
+    loginWithMicrosoft();
+});
+
+// Función de manejo de errores
+function handleError(error) {
+    console.error('Error:', error);
+}
