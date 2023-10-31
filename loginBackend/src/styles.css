@@ -1,0 +1,99 @@
+/* Estilos CSS */
+body {
+    font-family: 'Lato', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.modal-background {
+    display: none;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal {
+    background-color: #F2F2F2; /* Cambiar el fondo a #F2F2F2 */
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(204, 0, 255, 0.5); /* Sombra paralela morada */
+    text-align: center;
+    padding: 20px;
+    max-width: 80%;
+    width: 300px;
+    display: flex; /* Agregar display flex */
+    flex-direction: column; /* Para alinear verticalmente */
+    align-items: center; /* Centrar verticalmente */
+    position: absolute; /* Cambiar a posición absoluta */
+    top: 50%; /* Centrar verticalmente */
+    left: 50%; /* Centrar horizontalmente */
+    transform: translate(-50%, -50%); /* Centrar correctamente */
+}
+
+.modal-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal h2 {
+    margin: 0;
+    font-size: 20px;
+    margin-right: 10px;
+    display: flex; /* Agregar display flex */
+    align-items: center; /* Centrar verticalmente */
+}
+
+.modal img {
+    width: 9em;
+    ;
+}
+
+.login-button {
+    background-color: #fff; /* Cambiar a color blanco */
+    color: #000; /* Cambiar a color de texto negro */
+    border: 1px solid #000; /* Agregar borde negro */
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.login-button img {
+    width: 10%;
+    height: 10%;
+    padding-right: 3%;
+
+.login-button:hover {
+    background-color: #ccc; /* Cambiar a un color de fondo más claro al pasar el ratón */
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+    cursor: pointer;
+    color: #000; /* Cambiar a color de texto negro */
+}
+
+input[type="email"] {
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    width: 100%;
+}
+
+
