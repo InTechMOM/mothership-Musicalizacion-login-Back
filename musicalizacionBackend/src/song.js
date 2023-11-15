@@ -47,12 +47,29 @@ function aceptAndShare(selectSong){
 
 //Eliminar música de fondo del video
 const $omitir = document.querySelector('#omitir');
-$omitir.addEventListener('click', notMusic);
-function notMusic(){
-  if (audio) {
+$omitir.addEventListener('click', showConfirmationPopup);
+function showConfirmationPopup() {
+  // Mostrar el cuadro de diálogo de confirmación personalizado
+  const confirmationDialog = document.getElementById('confirmationDialog');
+  confirmationDialog.style.display = 'block';
+
+  // Manejar eventos de botones dentro del cuadro de diálogo
+  const siBtn = document.getElementById('siBtn');
+  const noBtn = document.getElementById('noBtn');
+
+  siBtn.addEventListener('click', () => {
+    // Cerrar el cuadro de diálogo de confirmación
+    confirmationDialog.style.display = 'none';
     audio.remove(); // Eliminar el elemento de audio
     botonCompartir.style.display = 'inline'; // Mostrar el botón "Compartir"
-}
+
+  });
+
+  noBtn.addEventListener('click', () => {
+    // Cerrar el cuadro de diálogo de confirmación sin realizar ninguna acción
+    confirmationDialog.style.display = 'none';
+    botonCompartir.style.display = 'inline'; // Mostrar el botón "Compartir"
+  });
 }
 
 
@@ -100,3 +117,4 @@ const arquetipos = [
   function handleInput() {
       $music.currentTime = $progress.value;
   }
+  
