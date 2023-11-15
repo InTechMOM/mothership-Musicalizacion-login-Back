@@ -1,26 +1,79 @@
 const express = require('express');
-const morgan = require('morgan');
-const path = require('path');
+const mongoose = require('mongoose');
 
-const DEFAULT_PORT = process.env.PORT || 3000;
-
-// initialize express.
 const app = express();
+const PORT = process.env.PORT || 3000;
 
-// Initialize variables.
-let port = DEFAULT_PORT;
-
-// Configure morgan module to log all requests.
-app.use(morgan('dev'));
-
-// Setup app folders.
-app.use(express.static('app'));
-
-// Set up a route for index.html
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname + '/index.html'));
+// Conectar a la base de datos MongoDB
+mongoose.connect('mongodb://localhost:27017/nombre-de-tu-base-de-datos', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
 });
 
-// Start the server.
-app.listen(port);
-console.log(`Listening on port ${port}...`);
+// Definir el esquema del modelo de usuario
+const usuarioSchema = new mongoose.Schema({
+  nombre: String,
+  apellido: String,
+  email: String,
+  contraseña: String,
+});
+
+const Usuario = mongoose.model('Usuario', usuarioSchema);
+
+// Configurar el middleware para analizar datos JSON
+app.use(express.json());
+
+// Rutas para el registro, inicio de sesión y recuperación de contraseña
+app.post('/registro', async (req, res) => {
+  const { nombre, apellido, email, contraseña } = req.body;
+
+  try {
+    const nuevoUsuario = new Usuario({ nombre, apellido, email, contraseña });
+    await nuevoUsuario.save();
+    res.status(200).json({ mensaje: 'Usuario registrado exitosamente' });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ mensaje: 'Error en el servidor' });
+  }
+});
+
+app.post('/login', async (req, res) => {
+  const { email, contraseña } = req.body;
+
+  try {
+    const usuario = await Usuario.findOne({ email, contraseña });
+    if (usuario) {
+      res.status(200).json({ mensaje: 'Inicio de sesión exitoso' });
+    } else {
+      res.status(401).json({ mensaje: 'Credenciales inválidas' });
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ mensaje: 'Error en el servidor' });
+  }
+});
+
+app.post('/recuperar-contraseña', async (req, res) => {
+  const { email, nuevaContraseña } = req.body;
+
+  try {
+    const usuario = await Usuario.findOne({ email });
+
+    if (usuario) {
+      usuario.contraseña = nuevaContraseña;
+      await usuario.save();
+      res.status(200).json({ mensaje: 'Contraseña actualizada exitosamente' });
+    } else {
+      res.status(404).json({ mensaje: 'Usuario no encontrado' });
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ mensaje: 'Error en el servidor' });
+  }
+});
+
+// Iniciar el servidor
+app.listen(PORT, () => {
+  console.log(`Servidor en ejecución en http://localhost:${PORT}`);
+});
+
