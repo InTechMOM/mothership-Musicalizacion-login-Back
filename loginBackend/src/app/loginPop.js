@@ -1,5 +1,3 @@
-// loginPop.js
-
 export function initLoginPop() {
     const loginForm = document.getElementById('loginForm');
     const loginEmailInput = document.getElementById('loginEmail');
@@ -33,7 +31,7 @@ export function initLoginPop() {
           },
           body: JSON.stringify({
             email: loginEmailInput.value,
-            contraseña: loginPasswordInput.value,
+            password: loginPasswordInput.value,
           }),
         });
   

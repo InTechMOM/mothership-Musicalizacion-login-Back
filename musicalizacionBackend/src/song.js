@@ -1,4 +1,4 @@
-//tipos de arquetipos a seleccionar y sus canciones modelo
+// Tipos de arquetipos a seleccionar y sus canciones modelo
 const arquetiposSong = {
   Inocente: ['../music/inocente.mp3'],
   Comun: ['../music/comun.mp3'],
@@ -14,9 +14,7 @@ const arquetiposSong = {
   Heroina: ['../music/heroe.mp3']
 };
 
-//función que selecciona una cancion aleatoria para cada arquetipo del 
-//array - Temporalmente solo con una canción modelo.
-
+// Función que selecciona una canción aleatoria para cada arquetipo del array - Temporalmente solo con una canción modelo.
 function selectSong(arquetipo) {
   try {
     const song = arquetiposSong[arquetipo];
@@ -27,94 +25,98 @@ function selectSong(arquetipo) {
     return null; // Devuelve null en caso de error
   }
 }
+
 let audio = null;
+let voiceAudio = null;
+let musicAudio = null;
 let image = null;
-const contenidoTerminado = document.getElementById('contenidoTerminado')
+let arquetipo = ""; // Define la variable arquetipo
+
+const contenidoTerminado = document.getElementById('contenidoTerminado');
 const $listo = document.querySelector('#listo');
-$listo.addEventListener('click', aceptAndShare);
+$listo.addEventListener('click', () => aceptAndShare(arquetipo)); // Pasa el arquetipo como parámetro
+
 const botonCompartir = document.getElementById('botonCompartir');
 botonCompartir.addEventListener('click', compartirContenido);
 
-function aceptAndShare(selectSong){
+// Elementos de control de sonido
+const $toggleVoice = document.getElementById('toggleVoice');
+const $toggleMusic = document.getElementById('toggleMusic');
+const $voiceVolume = document.getElementById('voiceVolume');
+const $musicVolume = document.getElementById('musicVolume');
+
+// Resto del código...
+
+function aceptAndShare(arquetipo) {
+  // Eliminar elementos de sonido existentes
+  if (voiceAudio) {
+    voiceAudio.pause();
+    voiceAudio.remove();
+  }
+  if (musicAudio) {
+    musicAudio.pause();
+    musicAudio.remove();
+  }
+
   image = document.createElement('img');
-  image.src = 'imagenCreada';//add url imágen generada anteriormente
-  audio = document.createElement('audio');
-  audio = selectSong(arquetipo);
+  image.src = 'imagenCreada'; // Añadir URL de la imagen generada anteriormente
+
+  // Verificar qué elementos de sonido deben estar activados
+  if ($toggleVoice.checked) {
+    voiceAudio = document.createElement('audio');
+    voiceAudio.src = selectSong(arquetipo);
+    voiceAudio.volume = $voiceVolume.value / 100; // Ajustar el volumen
+    contenidoTerminado.appendChild(voiceAudio);
+    voiceAudio.play(); // Reproducir inmediatamente si está activado
+  }
+
+  if ($toggleMusic.checked) {
+    musicAudio = document.createElement('audio');
+    musicAudio.src = selectSong(arquetipo);
+    musicAudio.volume = $musicVolume.value / 100; // Ajustar el volumen
+    contenidoTerminado.appendChild(musicAudio);
+    musicAudio.play(); // Reproducir inmediatamente si está activado
+  }
+
   contenidoTerminado.appendChild(image);
-  contenidoTerminado.appendChild(audio);
-  botonCompartir.style.display = 'inline' // Mostrar el botón "Compartir"
+  botonCompartir.style.display = 'inline'; // Mostrar el botón "Compartir"
 }
 
-//Eliminar música de fondo del video
-const $omitir = document.querySelector('#omitir');
-$omitir.addEventListener('click', showConfirmationPopup);
-function showConfirmationPopup() {
-  // Mostrar el cuadro de diálogo de confirmación personalizado
-  const confirmationDialog = document.getElementById('confirmationDialog');
-  confirmationDialog.style.display = 'block';
+// Resto del código...
+// Reproductor de música
+const $music = document.querySelector('#music');
+const $play = document.querySelector('#play');
+const $pause = document.querySelector('#pause');
 
-  // Manejar eventos de botones dentro del cuadro de diálogo
-  const siBtn = document.getElementById('siBtn');
-  const noBtn = document.getElementById('noBtn');
+$play.addEventListener('click', handlePlay);
+$pause.addEventListener('click', handlePause);
 
-  siBtn.addEventListener('click', () => {
-    // Cerrar el cuadro de diálogo de confirmación
-    confirmationDialog.style.display = 'none';
-    audio.remove(); // Eliminar el elemento de audio
-    botonCompartir.style.display = 'inline'; // Mostrar el botón "Compartir"
-
-  });
-
-  noBtn.addEventListener('click', () => {
-    // Cerrar el cuadro de diálogo de confirmación sin realizar ninguna acción
-    confirmationDialog.style.display = 'none';
-    botonCompartir.style.display = 'inline'; // Mostrar el botón "Compartir"
-  });
+function handlePlay() {
+  $music.play();
+  $play.hidden = true;
+  $pause.hidden = false;
 }
 
+function handlePause() {
+  $music.pause();
+  $play.hidden = false;
+  $pause.hidden = true;
+}
 
-const arquetipos = [
-  "Inocente", "Común", "Cuidadora", "Creativa", "Rebelde", "Gobernante",
-  "Bufona", "Maga", "Sabia", "Amante", "Exploradora", "Heroína"
-];
+const $progress = document.querySelector('#progress');
+$music.addEventListener('loadedmetadata', handleLoaded);
+$music.addEventListener('timeupdate', handleTimeUpdate);
 
-//reproductor de música
-  
-  const $music = document.querySelector('#music');
-  const $play = document.querySelector('#play');
-  const $pause = document.querySelector('#pause');
+function handleLoaded() {
+  $progress.max = $music.duration;
+}
 
-  
-  $play.addEventListener('click', handlePlay);
-  $pause.addEventListener('click', handlePause);
+function handleTimeUpdate() {
+  $progress.value = $music.currentTime;
+}
 
-  
-  function handlePlay() {
-      $music.play();
-      $play.hidden = true;
-      $pause.hidden = false;
-  }
-  function handlePause() {
-      $music.pause();
-      $play.hidden = false;
-      $pause.hidden = true;
-  }
+$progress.addEventListener('input', handleInput);
 
-  const $progress = document.querySelector('#progress');
-  $music.addEventListener('loadedmetadata', handleLoaded);
-  $music.addEventListener('timeupdate', handleTimeUpdate);
-  
-  function handleLoaded() {
-      $progress.max = $music.duration;
-  }
-  
-  function handleTimeUpdate() {
-      $progress.value = $music.currentTime;
-  }
-  
-  $progress.addEventListener('input', handleInput);
-  
-  function handleInput() {
-      $music.currentTime = $progress.value;
-  }
-  
+function handleInput() {
+  $music.currentTime = $progress.value;
+}

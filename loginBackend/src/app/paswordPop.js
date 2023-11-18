@@ -1,5 +1,3 @@
-// recuperarContraseñaPop.js
-
 export function initRecuperarContraseñaPop() {
     const recuperarContraseñaForm = document.getElementById('recuperarContraseñaForm');
     const recuperarContraseñaEmailInput = document.getElementById('recuperarContraseñaEmail');

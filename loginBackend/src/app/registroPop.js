@@ -68,7 +68,7 @@ export function initRegistroPop() {
             nombre: nombreInput.value,
             apellido: apellidoInput.value,
             email: emailInput.value,
-            contraseña: passwordInput.value,
+            password: passwordInput.value,
           }),
         });
   
