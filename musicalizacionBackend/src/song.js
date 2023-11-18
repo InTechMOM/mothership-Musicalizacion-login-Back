@@ -13,6 +13,9 @@ const arquetiposSong = {
   Exploradora: ['../music/explorador.mp3'],
   Heroina: ['../music/heroe.mp3']
 };
+//musica por defecto para pruebas
+const DEFAULT_VOICE_SONG = '../music/default_voice.mp3';
+const DEFAULT_MUSIC_SONG = '../music/default_music.mp3';
 
 // Función que selecciona una canción aleatoria para cada arquetipo del array - Temporalmente solo con una canción modelo.
 function selectSong(arquetipo) {
@@ -64,7 +67,7 @@ function aceptAndShare(arquetipo) {
   // Verificar qué elementos de sonido deben estar activados
   if ($toggleVoice.checked) {
     voiceAudio = document.createElement('audio');
-    voiceAudio.src = selectSong(arquetipo);
+    voiceAudio.src = selectSong(arquetipo)|| DEFAULT_VOICE_SONG;
     voiceAudio.volume = $voiceVolume.value / 100; // Ajustar el volumen
     contenidoTerminado.appendChild(voiceAudio);
     voiceAudio.play(); // Reproducir inmediatamente si está activado
@@ -72,7 +75,7 @@ function aceptAndShare(arquetipo) {
 
   if ($toggleMusic.checked) {
     musicAudio = document.createElement('audio');
-    musicAudio.src = selectSong(arquetipo);
+    musicAudio.src = selectSong(arquetipo)||DEFAULT_MUSIC_SONG;
     musicAudio.volume = $musicVolume.value / 100; // Ajustar el volumen
     contenidoTerminado.appendChild(musicAudio);
     musicAudio.play(); // Reproducir inmediatamente si está activado
@@ -82,7 +85,6 @@ function aceptAndShare(arquetipo) {
   botonCompartir.style.display = 'inline'; // Mostrar el botón "Compartir"
 }
 
-// Resto del código...
 // Reproductor de música
 const $music = document.querySelector('#music');
 const $play = document.querySelector('#play');
@@ -119,4 +121,54 @@ $progress.addEventListener('input', handleInput);
 
 function handleInput() {
   $music.currentTime = $progress.value;
+}
+// Reproductor de voz
+const $voiceAudio = document.querySelector('#voiceAudio');
+const $voicePlay = document.querySelector('#voicePlay');
+const $voicePause = document.querySelector('#voicePause');
+const $voiceProgress = document.querySelector('#voiceProgress');
+
+$voicePlay.addEventListener('click', handleVoicePlay);
+$voicePause.addEventListener('click', handleVoicePause);
+
+function handleVoicePlay() {
+  if (voiceAudio) {
+    voiceAudio.play();
+    $voicePlay.hidden = true;
+    $voicePause.hidden = false;
+  }
+}
+
+function handleVoicePause() {
+  if (voiceAudio) {
+    voiceAudio.pause();
+    $voicePlay.hidden = false;
+    $voicePause.hidden = true;
+  }
+}
+
+$voiceProgress.addEventListener('input', handleVoiceInput);
+
+function handleVoiceInput() {
+  if (voiceAudio) {
+    voiceAudio.currentTime = $voiceProgress.value;
+  }
+}
+
+// Manejar el cambio de volumen para la voz
+$voiceVolume.addEventListener('input', handleVoiceVolumeChange);
+
+function handleVoiceVolumeChange() {
+  if (voiceAudio) {
+    voiceAudio.volume = $voiceVolume.value / 100;
+  }
+}
+
+// Manejar el cambio de volumen para la música
+$musicVolume.addEventListener('input', handleMusicVolumeChange);
+
+function handleMusicVolumeChange() {
+  if (musicAudio) {
+    musicAudio.volume = $musicVolume.value / 100;
+  }
 }
