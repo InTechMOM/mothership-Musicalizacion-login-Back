@@ -1,0 +1,17 @@
+ /* Estilos de pie de página */
+ footer {
+    background-color: #FFFF;
+    color: black;
+    padding: 10px 0;
+    align-items: center;
+    position: absolute;
+    bottom: 0;
+    width: 100%;   
+    
+}
+
+.footer-left {
+    text-align: center;
+    font-size: 13px;   
+    
+}
