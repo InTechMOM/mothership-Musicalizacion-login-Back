@@ -1,35 +1,41 @@
-// Importar la función createPreview de videoCreator.js
-import { createPreview } from './videoCreator';
+document.addEventListener('DOMContentLoaded', () => {
+  handlePreviewControls();
+});
 
-// Función para manejar los controles de la vista previa
 function handlePreviewControls() {
-  const volumeVoice = document.getElementById('volumeVoice');
-  const volumeMusic = document.getElementById('volumeMusic');
+  const volumeVoice = document.getElementById('volumeVoice').value;
+  const volumeMusic = document.getElementById('volumeMusic').value;
   const toggleVoice = document.getElementById('toggleVoice');
   const toggleMusic = document.getElementById('toggleMusic');
+  const updatePreviewButton = document.getElementById('updatePreview');
 
-  // Manejar cambios en los controles
-  volumeVoice.addEventListener('input', updatePreview);
-  volumeMusic.addEventListener('input', updatePreview);
   toggleVoice.addEventListener('change', updatePreview);
   toggleMusic.addEventListener('change', updatePreview);
+  document.getElementById('volumeVoice').addEventListener('input', updatePreview);
+  document.getElementById('volumeMusic').addEventListener('input', updatePreview);
 
-  // Función para actualizar la vista previa
   function updatePreview() {
-    const controls = {
-      volumeVoice: volumeVoice.value,
-      volumeMusic: volumeMusic.value,
-      toggleVoice: toggleVoice.checked,
-      toggleMusic: toggleMusic.checked,
-      arquetipo: "Inocente", // Cambia esto con la lógica adecuada
-    };
+    fetch('/updatePreview', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        toggleVoice: toggleVoice.checked,
+        toggleMusic: toggleMusic.checked,
+        volumeVoice,
+        volumeMusic,
+      }),
+    })
+      .then(response => response.text())
+      .then(response => {
+        console.log(response);
 
-    // Llamada a la función createPreview en videoCreator.js
-    createPreview(controls);
+        // Actualizar la fuente del video de vista previa
+        const previewVideo = document.getElementById('previewVideo');
+        previewVideo.src = '../music/preview.mp4';
+        previewVideo.load();
+      })
+      .catch(error => console.error('Error:', error));
   }
 }
-
-// Llamar a la función al cargar la página
-document.addEventListener('DOMContentLoaded', handlePreviewControls);
-
-  

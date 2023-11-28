@@ -2,16 +2,16 @@ const path = require('path');
 const ffmpeg = require('fluent-ffmpeg');
 
 // Rutas para las imágenes y música por defecto
-const image1Path = './img/image1.jpg';
+const image1Path = './img/image1.png';
 const image2Path = './img/image2.jpg';
-const image3Path = './img/image3.jpg';
+const image3Path = './img/image3.png';
 const DEFAULT_VOICE_SONG = '../music/default_voice.mp3';
 const DEFAULT_MUSIC_SONG = '../music/explorador.mp3';
 
 // Rutas para la vista previa
-const previewImage1Path = './img/image1.jpg';
+const previewImage1Path = './img/image1.png';
 const previewImage2Path = './img/image2.jpg';
-const previewImage3Path = './img/image3.jpg';
+const previewImage3Path = './img/image3.png';
 const DEFAULT_PREVIEW_PATH = '../music/preview.mp4';
 
 // Rutas para los arquetipos y música por defecto
@@ -105,7 +105,7 @@ function createVideo(req, res) {
 }
 
 // Función para actualizar la vista previa
-function createPreview(controls) {
+function updatePreview(controls) {
   const outputPath = DEFAULT_PREVIEW_PATH; // Cambia a la ubicación deseada
   const voicePath = controls.toggleVoice ? '../music/voice_note.mp3' : DEFAULT_VOICE_SONG;
   const musicPath = controls.toggleMusic ? selectSong(controls.arquetipo) || DEFAULT_MUSIC_SONG : null;
@@ -165,5 +165,6 @@ function createPreview(controls) {
 
 module.exports = {
   createVideo,
-  createPreview,
+  updatePreview,
 };
+
