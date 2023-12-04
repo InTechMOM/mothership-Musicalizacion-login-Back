@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Creator</title>
+</head>
+<body>
+  <h1>Video Creator</h1>
+  <video id="previewVideo" width="640" height="360" controls></video>
+  <div>
+    <label for="toggleVoice">Toggle Voice</label>
+    <input type="checkbox" id="toggleVoice">
+  </div>
+  <div>
+    <label for="toggleMusic">Toggle Music</label>
+    <input type="checkbox" id="toggleMusic">
+  </div>
+  <div>
+    <label for="volumeVoice">Voice Volume</label>
+    <input type="range" id="volumeVoice" min="0" max="1" step="0.1" value="0.8">
+  </div>
+  <div>
+    <label for="volumeMusic">Music Volume</label>
+    <input type="range" id="volumeMusic" min="0" max="1" step="0.1" value="0.3">
+  </div>
+  <button id="updatePreview">Update Preview</button>
+  <button id="acceptChanges">Accept Changes</button>
+  <script src="app.js"></script>
+  <script src="previewControls.js"></script>
+</body>
+</html>

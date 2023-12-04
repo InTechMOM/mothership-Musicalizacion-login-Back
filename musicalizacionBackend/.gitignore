@@ -1,0 +1,33 @@
+# Dependencias de Node.js
+/node_modules
+
+# Archivos generados por el sistema
+/.npm
+/.yarn
+/.pnp.js
+
+# Logs y archivos de registro
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Directorio de compilación (puede variar según tu configuración)
+/dist
+
+# Archivos de entorno (deberían configurarse localmente)
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Archivos de configuración específicos del usuario
+.editorconfig
+.eslintcache
+.idea
+.vscode
+
+# Archivos temporales y de respaldo
+*.swp
+*~
